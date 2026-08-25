@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ganho de cobertura data-cy — Unidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --blueprint: #0B2E4F;
+    --blueprint-panel: #123B65;
+    --blueprint-deep: #082238;
+    --rule: rgba(207,230,245,0.20);
+    --rule-soft: rgba(207,230,245,0.09);
+    --text-bright: #FFFFFF;
+    --text: #CFE6F5;
+    --text-muted: #8FB2CB;
+    --antes: #C98A2C;
+    --antes-soft: rgba(201,138,44,0.16);
+    --depois: #3FB081;
+    --depois-soft: rgba(63,176,129,0.16);
+    --focus: #6FD9A8;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--blueprint);
+    background-image:
+      repeating-linear-gradient(0deg, var(--rule-soft) 0 1px, transparent 1px 88px),
+      repeating-linear-gradient(90deg, var(--rule-soft) 0 1px, transparent 1px 88px);
+    color: var(--text);
+    font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--focus); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  code, .mono, .num {
+    font-family: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 28px 90px;
+  }
+
+  /* ---------- Title block ---------- */
+  .titleblock {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 26px 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 22px 32px;
+    background: linear-gradient(180deg, var(--blueprint-panel), var(--blueprint));
+  }
+
+  .titleblock .kicker {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--focus);
+    margin: 0 0 10px;
+  }
+
+  .titleblock h1 {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -0.01em;
+    color: var(--text-bright);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .titleblock .sub {
+    margin: 10px 0 0;
+    max-width: 56ch;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .titleblock .sub a { text-decoration-color: rgba(111,217,168,0.5); }
+
+  .meta {
+    display: grid;
+    grid-auto-rows: min-content;
+    gap: 7px;
+    align-content: start;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-left: 1px solid var(--rule);
+    padding-left: 22px;
+    min-width: 200px;
+  }
+  .meta div span { color: var(--text); }
+
+  /* ---------- Hero stats ---------- */
+  .stats {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .stat {
+    background: var(--blueprint-deep);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .stat .value {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    color: var(--text-bright);
+  }
+  .stat .value.gain { color: var(--focus); }
+
+  .stat .label {
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Section heading ---------- */
+  .section-head {
+    margin-top: 54px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+  }
+
+  .section-head h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: "JetBrains Mono", monospace;
+  }
+  .legend .sw { display: inline-flex; align-items: center; gap: 7px; }
+  .legend .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .legend .dot.antes { background: var(--antes); }
+  .legend .dot.depois { background: var(--depois); }
+
+  /* ---------- Ledger rows ---------- */
+  .ledger { margin-top: 4px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1.55fr) minmax(0,2fr) 118px;
+    gap: 22px;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .row .idx {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    align-self: start;
+    padding-top: 3px;
+  }
+
+  .row .who h3 {
+    margin: 0 0 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .row .who p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    max-width: 42ch;
+  }
+  .row .who .files {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 2px 7px;
+  }
+
+  .bars {
+    display: grid;
+    gap: 7px;
+  }
+  .bar-track {
+    position: relative;
+    height: 15px;
+    background: var(--rule-soft);
+    border-radius: 2px;
+  }
+  .bar-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+  }
+  .bar-fill.antes { background: var(--antes); }
+  .bar-fill.depois { background: var(--depois); }
+  .bar-fill .fig {
+    position: absolute;
+    left: calc(100% + 8px);
+    white-space: nowrap;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    color: var(--text);
+  }
+  .bar-fill.depois .fig { color: var(--text-bright); font-weight: 600; }
+
+  .row .delta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+  .row .delta .pct {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--depois);
+  }
+  .row .delta .pct.new {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--depois-soft);
+    border: 1px solid var(--depois);
+    border-radius: 2px;
+    padding: 2px 6px;
+  }
+  .row .delta .abs {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .row.infra {
+    margin-top: 8px;
+    border-top: 1px dashed var(--rule);
+    padding-top: 22px;
+  }
+  .row.infra .idx { color: var(--text-muted); }
+
+  /* ---------- Totals bar ---------- */
+  .totals {
+    margin-top: 10px;
+    padding: 22px 24px;
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .totals .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .totals .figure {
+    font-family: "JetBrains Mono", monospace;
+    text-align: right;
+  }
+  .totals .figure .n {
+    display: block;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text-bright);
+  }
+  .totals .figure.gain .n { color: var(--focus); }
+  .totals .figure .cap {
+    display: block;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ---------- Methodology ---------- */
+  .method {
+    margin-top: 46px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .method h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .method p { margin: 0 0 10px; max-width: 74ch; }
+  .method code {
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 1px 6px;
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  /* ---------- Timeline strip ---------- */
+  .timeline {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .tl-item {
+    background: var(--blueprint-panel);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tl-item .date {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--focus);
+  }
+  .tl-item .what {
+    font-size: 0.86rem;
+    color: var(--text);
+  }
+  .tl-item .what code { font-size: 0.8rem; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    .titleblock { grid-template-columns: 1fr; }
+    .meta { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 16px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .timeline { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 26px 1fr; row-gap: 12px; }
+    .row .bars { grid-column: 1 / -1; }
+    .row .delta { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; gap: 12px; }
+    .totals { grid-template-columns: 1fr; text-align: left; }
+    .totals .figure { text-align: left; }
+  }
+
+  .scrollwrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="titleblock">
+    <div>
+      <p class="kicker">Instrumentação de testes · módulo Unidade</p>
+      <h1>Cobertura data-cy — antes &amp; depois</h1>
+      <p class="sub">Contagem real de atributos <code>data-cy</code> no módulo Unidade, comparando o estado do código em 17/08 — data de acesso ao repositório — com o estado atual, depois de duas levas de instrumentação.</p>
+    </div>
+    <div class="meta">
+      <div>Repo <span>cond21cloud</span></div>
+      <div>Branch <span>inclusao-data-cy-unidade-e-contas</span></div>
+      <div>Base <span>17/08/2026</span></div>
+      <div>Escopo <span>módulo Unidade</span></div>
+      <div>Arquivos alterados <span>19</span></div>
+    </div>
+  </header>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <span class="date">17 → 21 ago</span>
+      <span class="what">Primeira leva — formulários de cadastro (proprietário, inquilino, imobiliária, veículo, pessoa relacionada) e os componentes compartilhados de seleção de pessoa/endereço/e-mail que eles usam.</span>
+    </div>
+    <div class="tl-item">
+      <span class="date">24 ago · branch atual</span>
+      <span class="what">Segunda leva — <code>acelerar cadastro de unidade</code> (importação via planilha/ag-Grid), que ainda estava com cobertura zerada.</span>
+    </div>
+  </div>
+
+  <section class="stats">
+    <div class="stat">
+      <span class="value gain">+115</span>
+      <span class="label">data-cy inseridos (Unidade)</span>
+    </div>
+    <div class="stat">
+      <span class="value gain">+174%</span>
+      <span class="label">crescimento médio ponderado</span>
+    </div>
+    <div class="stat">
+      <span class="value">6</span>
+      <span class="label">blocos instrumentados</span>
+    </div>
+    <div class="stat">
+      <span class="value">66 → 181</span>
+      <span class="label">total antes → depois</span>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>Bloco a bloco</h2>
+    <div class="legend">
+      <span class="sw"><span class="dot antes"></span>Antes (17/08)</span>
+      <span class="sw"><span class="dot depois"></span>Depois</span>
+    </div>
+  </div>
+
+  <div class="ledger">
+
+    <div class="row">
+      <div class="idx">01</div>
+      <div class="who">
+        <h3>Cadastro principal</h3>
+        <p>Dados gerais da unidade: bloco, tipo, área, frações, entrega de boleto.</p>
+        <span class="files">1 arquivo</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:20.0%"><span class="fig">3</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">15</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+400%</span><span class="abs">+12 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">02</div>
+      <div class="who">
+        <h3>Proprietário / Inquilino</h3>
+        <p>Vínculo de pessoa física ou jurídica como proprietário e inquilino da unidade.</p>
+        <span class="files">2 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:74.3%"><span class="fig">52</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">70</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+35%</span><span class="abs">+18 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">03</div>
+      <div class="who">
+        <h3>Imobiliária / Entrega de boleto</h3>
+        <p>Administração terceirizada e endereço alternativo de entrega.</p>
+        <span class="files">2 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:7.1%"><span class="fig">2</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">28</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+1.300%</span><span class="abs">+26 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">04</div>
+      <div class="who">
+        <h3>Pessoa relacionada / Veículo</h3>
+        <p>Moradores e veículos cadastrados na unidade — cobertura inexistente antes.</p>
+        <span class="files">3 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:0%"><span class="fig">0</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">47</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">Novo</span><span class="abs">+47 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">05</div>
+      <div class="who">
+        <h3>Acelerar cadastro</h3>
+        <p>Importação em massa de unidades via planilha (ag-Grid) — feito na branch atual.</p>
+        <span class="files">2 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:0%"><span class="fig">0</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">10</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">Novo</span><span class="abs">+10 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">06</div>
+      <div class="who">
+        <h3>Listagem / Grupo de unidades / Importação</h3>
+        <p>Tela principal de listagem — grupos e importação em lote não foram tocados nesta leva.</p>
+        <span class="files">1 arquivo</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:81.8%"><span class="fig">9</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">11</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+22%</span><span class="abs">+2 data-cy</span></div>
+    </div>
+
+    <div class="row infra">
+      <div class="idx">—</div>
+      <div class="who">
+        <h3>Componentes compartilhados</h3>
+        <p>Não é uma tela — props <code>dataCy</code> novas em <code>seletorPessoaFisica</code>, <code>seletorPessoaJuridica</code>, <code>seletorEndereco</code>, <code>seletorEmail</code>, <code>comboBox</code> e <code>patternValidator</code>, viabilizando os blocos 01–03 acima.</p>
+        <span class="files">8 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:42.5%"><span class="fig">17</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">40</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+135%</span><span class="abs">+23 data-cy</span></div>
+    </div>
+
+  </div>
+
+  <div class="totals">
+    <div class="label">Total geral · 6 blocos do módulo Unidade <span style="opacity:.6">(sem contar infraestrutura)</span></div>
+    <div class="figure"><span class="n">66</span><span class="cap">antes</span></div>
+    <div class="figure"><span class="n">181</span><span class="cap">depois</span></div>
+    <div class="figure gain"><span class="n">+115 · 174%</span><span class="cap">ganho</span></div>
+  </div>
+
+  <div class="method">
+    <h2>Metodologia</h2>
+    <p>Contagem obtida via <code>git grep -oE '(data-cy|dataCy)[A-Za-z]*[[:space:]]*=' &lt;rev&gt; -- &lt;pasta&gt;</code>, comparando o estado do código de 17/08/2026 (data de acesso ao repositório) com o estado atual da branch — que já contém a primeira leva de instrumentação mais o complemento de "acelerar cadastro" feito depois. O padrão captura tanto o atributo DOM literal <code>data-cy=</code> quanto qualquer prop React da família <code>dataCy*=</code> (ex.: <code>dataCyView=</code>) sendo efetivamente atribuída — declarações em <code>PropTypes</code> e leituras de prop sem atribuição não entram na contagem.</p>
+    <p>Blocos com <strong>0</strong> no "antes" (Pessoa relacionada/Veículo e Acelerar cadastro) são marcados como <span class="pct new" style="display:inline-block">Novo</span> em vez de percentual — cobertura criada do zero não tem uma base para calcular crescimento relativo.</p>
+    <p>Componentes compartilhados entram como linha própria, separada do total dos 6 blocos: eles também são reaproveitados por outros módulos (Cliente, Fornecedor, Condomínio) fora do escopo deste relatório, então somá-los ao total principal misturaria o ganho de Unidade com o de outras telas.</p>
+    <p>Esse número mede <em>atributos inseridos no DOM</em>, refletindo o quanto de código de instrumentação foi de fato adicionado ao repositório desde 17/08 — não é a mesma unidade de medida de um "item mapeado" em um levantamento de gaps elemento a elemento.</p>
+  </div>
+
+</div>
+</body>
+</html>
