@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relatórios de cobertura data-cy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --blueprint: #0B2E4F;
+    --blueprint-panel: #123B65;
+    --blueprint-deep: #082238;
+    --rule: rgba(207,230,245,0.20);
+    --rule-soft: rgba(207,230,245,0.09);
+    --text-bright: #FFFFFF;
+    --text: #CFE6F5;
+    --text-muted: #8FB2CB;
+    --focus: #6FD9A8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--blueprint);
+    background-image:
+      repeating-linear-gradient(0deg, var(--rule-soft) 0 1px, transparent 1px 88px),
+      repeating-linear-gradient(90deg, var(--rule-soft) 0 1px, transparent 1px 88px);
+    color: var(--text);
+    font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sheet {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 28px 90px;
+  }
+
+  header.titleblock {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 26px 28px;
+    background: linear-gradient(180deg, var(--blueprint-panel), var(--blueprint));
+  }
+
+  .kicker {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--focus);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    letter-spacing: -0.01em;
+    color: var(--text-bright);
+    margin: 0;
+  }
+
+  .sub {
+    margin: 10px 0 0;
+    max-width: 60ch;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .section-head {
+    margin-top: 46px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+  }
+
+  .section-head h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .list {
+    margin-top: 4px;
+  }
+
+  a.card {
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--rule-soft);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a.card:hover { background: var(--rule-soft); }
+  a.card:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: -2px;
+  }
+
+  a.card .idx {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  a.card h3 {
+    margin: 0 0 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  a.card p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+  }
+
+  a.card .go {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--focus);
+    white-space: nowrap;
+  }
+
+  footer {
+    margin-top: 46px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="titleblock">
+    <p class="kicker">cond21cloud · instrumentação de testes</p>
+    <h1>Relatórios de cobertura data-cy</h1>
+    <p class="sub">Índice dos relatórios de ganho de cobertura de atributos <code>data-cy</code>, módulo a módulo, gerados a partir da comparação entre <code>origin/master</code> e as branches de instrumentação.</p>
+  </header>
+
+  <div class="section-head">
+    <h2>Relatórios disponíveis</h2>
+  </div>
+
+  <div class="list">
+
+    <a class="card" href="./receita/">
+      <div class="idx">01</div>
+      <div>
+        <h3>Receita</h3>
+        <p>Acordo, Abatimento, Cliente, Arrecadação, Consumo e Contas a Receber.</p>
+      </div>
+      <div class="go">abrir →</div>
+    </a>
+
+    <a class="card" href="./unidade/">
+      <div class="idx">02</div>
+      <div>
+        <h3>Unidade</h3>
+        <p>Cobertura data-cy dos módulos do domínio Unidade.</p>
+      </div>
+      <div class="go">abrir →</div>
+    </a>
+
+  </div>
+
+  <footer>
+    Para adicionar um novo relatório, crie uma pasta na raiz do repositório com um <code>index.html</code> dentro e inclua um novo card acima apontando para <code>./nome-da-pasta/</code>.
+  </footer>
+
+</div>
+
+</body>
+</html>
