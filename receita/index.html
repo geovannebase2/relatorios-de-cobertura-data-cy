@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ganho de cobertura data-cy — Receita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --blueprint: #0B2E4F;
+    --blueprint-panel: #123B65;
+    --blueprint-deep: #082238;
+    --rule: rgba(207,230,245,0.20);
+    --rule-soft: rgba(207,230,245,0.09);
+    --text-bright: #FFFFFF;
+    --text: #CFE6F5;
+    --text-muted: #8FB2CB;
+    --antes: #C98A2C;
+    --antes-soft: rgba(201,138,44,0.16);
+    --depois: #3FB081;
+    --depois-soft: rgba(63,176,129,0.16);
+    --focus: #6FD9A8;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--blueprint);
+    background-image:
+      repeating-linear-gradient(0deg, var(--rule-soft) 0 1px, transparent 1px 88px),
+      repeating-linear-gradient(90deg, var(--rule-soft) 0 1px, transparent 1px 88px);
+    color: var(--text);
+    font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--focus); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  code, .mono, .num {
+    font-family: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 28px 90px;
+  }
+
+  /* ---------- Title block ---------- */
+  .titleblock {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 26px 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 22px 32px;
+    background: linear-gradient(180deg, var(--blueprint-panel), var(--blueprint));
+  }
+
+  .titleblock .kicker {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--focus);
+    margin: 0 0 10px;
+  }
+
+  .titleblock h1 {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -0.01em;
+    color: var(--text-bright);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .titleblock .sub {
+    margin: 10px 0 0;
+    max-width: 54ch;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .meta {
+    display: grid;
+    grid-auto-rows: min-content;
+    gap: 7px;
+    align-content: start;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-left: 1px solid var(--rule);
+    padding-left: 22px;
+    min-width: 190px;
+  }
+  .meta div span { color: var(--text); }
+
+  /* ---------- Hero stats ---------- */
+  .stats {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .stat {
+    background: var(--blueprint-deep);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .stat .value {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    color: var(--text-bright);
+  }
+  .stat .value.gain { color: var(--focus); }
+
+  .stat .label {
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Section heading ---------- */
+  .section-head {
+    margin-top: 54px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+  }
+
+  .section-head h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: "JetBrains Mono", monospace;
+  }
+  .legend .sw { display: inline-flex; align-items: center; gap: 7px; }
+  .legend .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .legend .dot.antes { background: var(--antes); }
+  .legend .dot.depois { background: var(--depois); }
+
+  /* ---------- Ledger rows ---------- */
+  .ledger { margin-top: 4px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1.55fr) minmax(0,2fr) 110px;
+    gap: 22px;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .row .idx {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    align-self: start;
+    padding-top: 3px;
+  }
+
+  .row .who h3 {
+    margin: 0 0 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .row .who p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    max-width: 40ch;
+  }
+  .row .who .files {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 2px 7px;
+  }
+
+  .bars {
+    display: grid;
+    gap: 7px;
+  }
+  .bar-track {
+    position: relative;
+    height: 15px;
+    background: var(--rule-soft);
+    border-radius: 2px;
+  }
+  .bar-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+  }
+  .bar-fill.antes { background: var(--antes); }
+  .bar-fill.depois { background: var(--depois); }
+  .bar-fill .fig {
+    position: absolute;
+    left: calc(100% + 8px);
+    white-space: nowrap;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    color: var(--text);
+  }
+  .bar-fill.depois .fig { color: var(--text-bright); font-weight: 600; }
+
+  .row .delta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+  .row .delta .pct {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--depois);
+  }
+  .row .delta .abs {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .row.infra {
+    margin-top: 8px;
+    border-top: 1px dashed var(--rule);
+    padding-top: 22px;
+  }
+  .row.infra .idx { color: var(--text-muted); }
+
+  /* ---------- Totals bar ---------- */
+  .totals {
+    margin-top: 10px;
+    padding: 22px 24px;
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .totals .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .totals .figure {
+    font-family: "JetBrains Mono", monospace;
+    text-align: right;
+  }
+  .totals .figure .n {
+    display: block;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text-bright);
+  }
+  .totals .figure.gain .n { color: var(--focus); }
+  .totals .figure .cap {
+    display: block;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ---------- Methodology ---------- */
+  .method {
+    margin-top: 46px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .method h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .method p { margin: 0 0 10px; max-width: 74ch; }
+  .method code {
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 1px 6px;
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    .titleblock { grid-template-columns: 1fr; }
+    .meta { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 16px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .row { grid-template-columns: 26px 1fr; row-gap: 12px; }
+    .row .bars { grid-column: 1 / -1; }
+    .row .delta { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; gap: 12px; }
+    .totals { grid-template-columns: 1fr; text-align: left; }
+    .totals .figure { text-align: left; }
+  }
+
+  .scrollwrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="titleblock">
+    <div>
+      <p class="kicker">Instrumentação de testes · domínio Receita</p>
+      <h1>Cobertura data-cy — antes &amp; depois</h1>
+      <p class="sub">Contagem real de atributos <code>data-cy</code> nos módulos do domínio Receita, comparando o estado do código antes e depois da iniciativa de instrumentação para a automação de QA (Cypress).</p>
+    </div>
+    <div class="meta">
+      <div>Repo <span>cond21cloud</span></div>
+      <div>Branch <span>inclusao-data-cy-unidade-e-contas</span></div>
+      <div>Base <span>origin/master</span></div>
+      <div>Escopo <span>domínio Receita</span></div>
+      <div>Arquivos alterados <span>55</span></div>
+    </div>
+  </header>
+
+  <section class="stats">
+    <div class="stat">
+      <span class="value gain">+384</span>
+      <span class="label">data-cy inseridos (Receita)</span>
+    </div>
+    <div class="stat">
+      <span class="value gain">+164%</span>
+      <span class="label">crescimento médio ponderado</span>
+    </div>
+    <div class="stat">
+      <span class="value">6</span>
+      <span class="label">módulos instrumentados</span>
+    </div>
+    <div class="stat">
+      <span class="value">234 → 618</span>
+      <span class="label">total antes → depois</span>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>Módulo a módulo</h2>
+    <div class="legend">
+      <span class="sw"><span class="dot antes"></span>Antes</span>
+      <span class="sw"><span class="dot depois"></span>Depois</span>
+    </div>
+  </div>
+
+  <div class="ledger">
+
+    <div class="row">
+      <div class="idx">01</div>
+      <div class="who">
+        <h3>Acordo</h3>
+        <p>Listagem, wizard de 4 passos e accordions de parcelas/composição.</p>
+        <span class="files">5 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:89.5%"><span class="fig">68</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">76</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+12%</span><span class="abs">+8 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">02</div>
+      <div class="who">
+        <h3>Abatimento</h3>
+        <p>Listagem, alerta de exclusão e cadastro/edição.</p>
+        <span class="files">3 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:88.6%"><span class="fig">39</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">44</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+13%</span><span class="abs">+5 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">03</div>
+      <div class="who">
+        <h3>Cliente</h3>
+        <p>Listagem e cadastro PF/PJ completo — endereço, contato, conta bancária, alertas.</p>
+        <span class="files">3 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:15.7%"><span class="fig">14</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">89</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+536%</span><span class="abs">+75 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">04</div>
+      <div class="who">
+        <h3>Arrecadação</h3>
+        <p>Menu de ações, 3 modais de lançamento, receitas regulares, boletos.</p>
+        <span class="files">12 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:59.7%"><span class="fig">71</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">119</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+68%</span><span class="abs">+48 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">05</div>
+      <div class="who">
+        <h3>Consumo</h3>
+        <p>Leitura por unidade, planilha e configuração de tipo de consumo.</p>
+        <span class="files">9 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:12.9%"><span class="fig">9</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">70</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+678%</span><span class="abs">+61 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">06</div>
+      <div class="who">
+        <h3>Contas a Receber</h3>
+        <p>Filtro, dropdown de ações, modal de conta, acelerar cadastro, remessa/retorno.</p>
+        <span class="files">23 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:15.0%"><span class="fig">33</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">220</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+567%</span><span class="abs">+187 data-cy</span></div>
+    </div>
+
+    <div class="row infra">
+      <div class="idx">—</div>
+      <div class="who">
+        <h3>Componentes compartilhados</h3>
+        <p>Não é uma tela — props <code>dataCy</code> novas em Switch, DateRanger, Modal, Table etc., que viabilizaram parte dos ganhos acima (e também servem outros módulos fora deste escopo).</p>
+        <span class="files">28 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track"><div class="bar-fill antes" style="width:65.4%"><span class="fig">149</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">228</span></div></div>
+      </div>
+      <div class="delta"><span class="pct">+53%</span><span class="abs">+79 data-cy</span></div>
+    </div>
+
+  </div>
+
+  <div class="totals">
+    <div class="label">Total geral · 6 módulos do domínio Receita <span style="opacity:.6">(sem contar infraestrutura)</span></div>
+    <div class="figure"><span class="n">234</span><span class="cap">antes</span></div>
+    <div class="figure"><span class="n">618</span><span class="cap">depois</span></div>
+    <div class="figure gain"><span class="n">+384 · 164%</span><span class="cap">ganho</span></div>
+  </div>
+
+  <div class="method">
+    <h2>Metodologia</h2>
+    <p>Contagem obtida via <code>git grep -oE '(data-cy|dataCy)[A-Za-z]*[[:space:]]*=' &lt;rev&gt; -- &lt;pasta&gt;</code>, comparando <code>origin/master</code> (antes) com o HEAD da branch (depois). O padrão captura tanto o atributo DOM literal <code>data-cy=</code> quanto qualquer prop React da família <code>dataCy*=</code> (ex.: <code>dataCyView=</code>, <code>dataCyBotaoSalvar=</code>) sendo efetivamente atribuída — declarações em <code>PropTypes</code> e leituras de prop sem atribuição não entram na contagem.</p>
+    <p>Escopo restrito aos 6 módulos do domínio Receita mapeados no artifact original de gaps (Acordo, Abatimento, Cliente, Arrecadação, Consumo e Contas a Receber). A mesma iniciativa também cobriu Unidade, Contas (conta bancária), Plano de Contas e Responsável Legal em dias anteriores — fora do domínio Receita, esses números não entram nesta contagem.</p>
+    <p>Componentes compartilhados (<code>Switch</code>, <code>DateRanger</code>, <code>Modal</code>, <code>Table</code> etc.) também ganharam props <code>dataCy</code> novas para viabilizar parte desses ganhos — por isso entram no relatório como linha própria, mas separada do total dos 6 módulos: como esses componentes também são reaproveitados por telas fora do domínio Receita, somá-los ao total principal inflaria o número sem representar só Receita.</p>
+    <p>Esse número mede <em>atributos inseridos no DOM</em>, não o mesmo que a contagem de "elementos mapeados" do artifact de gaps (que agrupa, por exemplo, um radio de 2 opções como 1 item). As duas contagens são complementares: o artifact mostra <em>o que</em> foi coberto elemento a elemento; este relatório mostra <em>quanto</em> código de instrumentação isso de fato adicionou ao repositório.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
