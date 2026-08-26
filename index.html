@@ -6,7 +6,7 @@
 <title>Relatórios de cobertura data-cy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=Sora:wght@800&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -48,6 +48,34 @@
     border-radius: 3px;
     padding: 26px 28px;
     background: linear-gradient(180deg, var(--blueprint-panel), var(--blueprint));
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 22px;
+  }
+
+  .brand-mark .b {
+    font-family: "Sora", sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.8px;
+    color: var(--text-bright);
+  }
+
+  .brand-mark .two {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: var(--focus);
+    color: var(--blueprint);
+    font-family: "Sora", sans-serif;
+    font-weight: 800;
+    font-size: 17.6px;
   }
 
   .kicker {
@@ -150,6 +178,66 @@
     font-size: 0.8rem;
     color: var(--text-muted);
   }
+
+  .intro {
+    margin: 18px 0 0;
+    max-width: 66ch;
+    color: var(--text);
+    font-size: 0.92rem;
+  }
+
+  .steps {
+    margin-top: 6px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 18px;
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step .step-idx {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-top: 2px;
+  }
+
+  .step h3 {
+    margin: 0 0 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  .step p {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    max-width: 58ch;
+  }
+
+  .callout {
+    margin-top: 22px;
+    padding: 18px 22px;
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--focus);
+    border-radius: 3px;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .callout strong {
+    color: var(--focus);
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+  }
 </style>
 </head>
 <body>
@@ -157,10 +245,57 @@
 <div class="sheet">
 
   <header class="titleblock">
+    <div class="brand-mark"><span class="b">BASE</span><span class="two">2</span></div>
     <p class="kicker">cond21cloud · instrumentação de testes</p>
     <h1>Relatórios de cobertura data-cy</h1>
     <p class="sub">Índice dos relatórios de ganho de cobertura de atributos <code>data-cy</code>, módulo a módulo, gerados a partir da comparação entre <code>origin/master</code> e as branches de instrumentação.</p>
   </header>
+
+  <div class="section-head">
+    <h2>Contexto e abordagem</h2>
+  </div>
+
+  <p class="intro">Ao analisar os módulos, identificamos que vários deles têm poucos atributos <code>data-cy</code> — ou nenhum (pré-requisito para a automação de testes Cypress). Sem essa instrumentação, cada nova automação passaria a depender do time de Dev, que precisaria priorizar essa inclusão conforme os testes fossem sendo construídos, gerando fila de espera e trabalho extra para o time.</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <span class="step-idx">01</span>
+      <div>
+        <h3>Mapeamento com IA</h3>
+        <p>Com o acesso disponibilizado pelo TL, mapeio cada módulo com apoio de IA e levanto os candidatos a <code>data-cy</code>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-idx">02</span>
+      <div>
+        <h3>Inclusão no código</h3>
+        <p>Atuo diretamente incluindo os atributos no código do GC, a partir dos candidatos levantados.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-idx">03</span>
+      <div>
+        <h3>Revisão e aprovação</h3>
+        <p>O TL revisa e aprova a subida das alterações antes do merge.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-idx">04</span>
+      <div>
+        <h3>Automação</h3>
+        <p>Com o código já instrumentado, construímos a automação de teste sobre essa base.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout">
+    <p><strong>Resultado:</strong> ganho de agilidade e produtividade na construção da automação — sem depender do time de Dev, e sem gerar trabalho extra para eles.</p>
+  </div>
 
   <div class="section-head">
     <h2>Relatórios disponíveis</h2>
