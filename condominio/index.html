@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ganho de cobertura data-cy — Unidade</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ganho de cobertura data-cy — Condomínio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -90,11 +90,11 @@
 
   .titleblock .sub {
     margin: 10px 0 0;
-    max-width: 56ch;
+    max-width: 58ch;
     color: var(--text);
     font-size: 0.95rem;
   }
-  .titleblock .sub a { text-decoration-color: rgba(111,217,168,0.5); }
+  .titleblock .sub a { text-decoration-color: rgba(158,220,55,0.5); }
 
   .meta {
     display: grid;
@@ -106,7 +106,7 @@
     color: var(--text-muted);
     border-left: 1px solid var(--rule);
     padding-left: 22px;
-    min-width: 200px;
+    min-width: 210px;
   }
   .meta div span { color: var(--text); }
 
@@ -357,7 +357,7 @@
   .timeline {
     margin-top: 34px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1px;
     background: var(--rule);
     border: 1px solid var(--rule);
@@ -401,55 +401,60 @@
 </style>
 </head>
 <body>
+
 <div class="sheet">
 
   <header class="titleblock">
     <div>
-      <p class="kicker">Instrumentação de testes · módulo Unidade</p>
+      <p class="kicker">Instrumentação de testes · módulo Condomínio</p>
       <h1>Cobertura data-cy — antes &amp; depois</h1>
-      <p class="sub">Contagem real de atributos <code>data-cy</code> no módulo Unidade, comparando o estado do código em 17/08 — data de acesso ao repositório — com o estado atual, depois de duas levas de instrumentação.</p>
+      <p class="sub">Contagem real de atributos <code>data-cy</code> nas 5 features do módulo Condomínio (menu <code>menu-pai-condominio</code> em <code>routes.jsx</code>), comparando o estado do código em 17/08 — data de acesso ao repositório — com o estado atual, depois de três levas de instrumentação.</p>
     </div>
     <div class="meta">
       <div>Repo <span>cond21cloud</span></div>
-      <div>Branch <span>inclusao-data-cy-unidade-e-contas</span></div>
+      <div>Branches <span>4 (picklist, condominio, unidade, contas)</span></div>
       <div>Base <span>17/08/2026</span></div>
-      <div>Escopo <span>módulo Unidade</span></div>
-      <div>Arquivos alterados <span>19</span></div>
+      <div>Escopo <span>módulo Condomínio, 5 features</span></div>
+      <div>Arquivos com data-cy <span>30 → 68</span></div>
     </div>
   </header>
 
   <div class="timeline">
     <div class="tl-item">
       <span class="date">17 → 21 ago</span>
-      <span class="what">Primeira leva — formulários de cadastro (proprietário, inquilino, imobiliária, veículo, pessoa relacionada) e os componentes compartilhados de seleção de pessoa/endereço/e-mail que eles usam.</span>
+      <span class="what">Unidade, primeira leva — cadastro principal, proprietário/inquilino, imobiliária/entrega de boleto, pessoa relacionada/veículo.</span>
     </div>
     <div class="tl-item">
-      <span class="date">24 ago · branch atual</span>
-      <span class="what">Segunda leva — <code>acelerar cadastro de unidade</code> (importação via planilha/ag-Grid), que ainda estava com cobertura zerada.</span>
+      <span class="date">24 ago</span>
+      <span class="what">Contas Bancárias (cadastro), Plano de Contas/Responsável Legal/Acordo, e <code>acelerar cadastro</code> de Unidade.</span>
+    </div>
+    <div class="tl-item">
+      <span class="date">27 ago · hoje</span>
+      <span class="what">Dados do Condomínio completo, resto de Unidade (listagem, importação, grupos, vínculo de pessoa, cadastro residual) e Contas Bancárias completo — 4 branches separadas para MRs menores.</span>
     </div>
   </div>
 
   <section class="stats">
     <div class="stat">
-      <span class="value gain">+115</span>
-      <span class="label">data-cy inseridos (Unidade)</span>
+      <span class="value gain">+298</span>
+      <span class="label">data-cy inseridos (5 features)</span>
     </div>
     <div class="stat">
-      <span class="value gain">+174%</span>
+      <span class="value gain">+141%</span>
       <span class="label">crescimento médio ponderado</span>
     </div>
     <div class="stat">
-      <span class="value">6</span>
-      <span class="label">blocos instrumentados</span>
+      <span class="value">5</span>
+      <span class="label">features instrumentadas</span>
     </div>
     <div class="stat">
-      <span class="value">66 → 181</span>
+      <span class="value">212 → 510</span>
       <span class="label">total antes → depois</span>
     </div>
   </section>
 
   <div class="section-head">
-    <h2>Bloco a bloco</h2>
+    <h2>Feature a feature</h2>
     <div class="legend">
       <span class="sw"><span class="dot antes"></span>Antes (17/08)</span>
       <span class="sw"><span class="dot depois"></span>Depois</span>
@@ -461,118 +466,104 @@
     <div class="row">
       <div class="idx">01</div>
       <div class="who">
-        <h3>Cadastro principal</h3>
-        <p>Dados gerais da unidade: bloco, tipo, área, frações, entrega de boleto.</p>
-        <span class="files">1 arquivo</span>
+        <h3>Dados do Condomínio</h3>
+        <p>Listagem, cadastro, aba Edificação e modal Grupo de Condomínios — rota <code>/condominio</code>.</p>
+        <span class="files">7 arquivos</span>
       </div>
       <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:20.0%"><span class="fig">3</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">15</span></div></div>
+        <div class="bar-track"><div class="bar-fill antes" style="width:45.0%"><span class="fig">36</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">80</span></div></div>
       </div>
-      <div class="delta"><span class="pct">+400%</span><span class="abs">+12 data-cy</span></div>
+      <div class="delta"><span class="pct">+122%</span><span class="abs">+44 data-cy</span></div>
     </div>
 
     <div class="row">
       <div class="idx">02</div>
       <div class="who">
-        <h3>Proprietário / Inquilino</h3>
-        <p>Vínculo de pessoa física ou jurídica como proprietário e inquilino da unidade.</p>
-        <span class="files">2 arquivos</span>
+        <h3>Unidade</h3>
+        <p>Listagem, Acelerar Cadastro, Importação, Grupo de Unidades, Vínculo de Pessoa e cadastro — rota <code>/unidade</code>.</p>
+        <span class="files">23 arquivos</span>
       </div>
       <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:74.3%"><span class="fig">52</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">70</span></div></div>
+        <div class="bar-track"><div class="bar-fill antes" style="width:25.0%"><span class="fig">66</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">264</span></div></div>
       </div>
-      <div class="delta"><span class="pct">+35%</span><span class="abs">+18 data-cy</span></div>
+      <div class="delta"><span class="pct">+300%</span><span class="abs">+198 data-cy</span></div>
     </div>
 
     <div class="row">
       <div class="idx">03</div>
       <div class="who">
-        <h3>Imobiliária / Entrega de boleto</h3>
-        <p>Administração terceirizada e endereço alternativo de entrega.</p>
-        <span class="files">2 arquivos</span>
+        <h3>Contas</h3>
+        <p>Listagem, cadastro e visualização de contas bancárias — rota <code>/conta-bancaria</code>.</p>
+        <span class="files">11 arquivos</span>
       </div>
       <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:7.1%"><span class="fig">2</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">28</span></div></div>
+        <div class="bar-track"><div class="bar-fill antes" style="width:56.7%"><span class="fig">38</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">67</span></div></div>
       </div>
-      <div class="delta"><span class="pct">+1.300%</span><span class="abs">+26 data-cy</span></div>
+      <div class="delta"><span class="pct">+76%</span><span class="abs">+29 data-cy</span></div>
     </div>
 
     <div class="row">
       <div class="idx">04</div>
       <div class="who">
-        <h3>Pessoa relacionada / Veículo</h3>
-        <p>Moradores e veículos cadastrados na unidade — cobertura inexistente antes.</p>
-        <span class="files">3 arquivos</span>
+        <h3>Plano de Contas</h3>
+        <p>Cadastro e itens de receita/despesa do plano de contas — rota <code>/plano-contas</code>.</p>
+        <span class="files">9 arquivos</span>
       </div>
       <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:0%"><span class="fig">0</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">47</span></div></div>
+        <div class="bar-track"><div class="bar-fill antes" style="width:58.3%"><span class="fig">28</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">48</span></div></div>
       </div>
-      <div class="delta"><span class="pct new">Novo</span><span class="abs">+47 data-cy</span></div>
+      <div class="delta"><span class="pct">+71%</span><span class="abs">+20 data-cy</span></div>
     </div>
 
     <div class="row">
       <div class="idx">05</div>
       <div class="who">
-        <h3>Acelerar cadastro</h3>
-        <p>Importação em massa de unidades via planilha (ag-Grid) — feito na branch atual.</p>
-        <span class="files">2 arquivos</span>
+        <h3>Responsável Legal</h3>
+        <p>Cadastro de responsável legal e histórico de vigência — rota <code>/responsavel-legal</code>.</p>
+        <span class="files">4 arquivos</span>
       </div>
       <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:0%"><span class="fig">0</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">10</span></div></div>
+        <div class="bar-track"><div class="bar-fill antes" style="width:86.3%"><span class="fig">44</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">51</span></div></div>
       </div>
-      <div class="delta"><span class="pct new">Novo</span><span class="abs">+10 data-cy</span></div>
-    </div>
-
-    <div class="row">
-      <div class="idx">06</div>
-      <div class="who">
-        <h3>Listagem / Grupo de unidades / Importação</h3>
-        <p>Tela principal de listagem — grupos e importação em lote não foram tocados nesta leva.</p>
-        <span class="files">1 arquivo</span>
-      </div>
-      <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:81.8%"><span class="fig">9</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">11</span></div></div>
-      </div>
-      <div class="delta"><span class="pct">+22%</span><span class="abs">+2 data-cy</span></div>
+      <div class="delta"><span class="pct">+16%</span><span class="abs">+7 data-cy</span></div>
     </div>
 
     <div class="row infra">
       <div class="idx">—</div>
       <div class="who">
         <h3>Componentes compartilhados</h3>
-        <p>Não é uma tela — props <code>dataCy</code> novas em <code>seletorPessoaFisica</code>, <code>seletorPessoaJuridica</code>, <code>seletorEndereco</code>, <code>seletorEmail</code>, <code>comboBox</code> e <code>patternValidator</code>, viabilizando os blocos 01–03 acima.</p>
-        <span class="files">8 arquivos</span>
+        <p>Não é uma feature própria — props <code>dataCy</code> novas em <code>PickList</code>, <code>SelectList</code>, <code>TableButton</code> (widget), <code>BancosComboBox</code>, <code>SimpleFile</code> e nos seletores de pessoa física/jurídica, viabilizando as 5 features acima.</p>
+        <span class="files">14 arquivos</span>
       </div>
       <div class="bars">
-        <div class="bar-track"><div class="bar-fill antes" style="width:42.5%"><span class="fig">17</span></div></div>
-        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">40</span></div></div>
+        <div class="bar-track"><div class="bar-fill antes" style="width:13.5%"><span class="fig">5</span></div></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">37</span></div></div>
       </div>
-      <div class="delta"><span class="pct">+135%</span><span class="abs">+23 data-cy</span></div>
+      <div class="delta"><span class="pct">+640%</span><span class="abs">+32 data-cy</span></div>
     </div>
 
   </div>
 
   <div class="totals">
-    <div class="label">Total geral · 6 blocos do módulo Unidade <span style="opacity:.6">(sem contar infraestrutura)</span></div>
-    <div class="figure"><span class="n">66</span><span class="cap">antes</span></div>
-    <div class="figure"><span class="n">181</span><span class="cap">depois</span></div>
-    <div class="figure gain"><span class="n">+115 · 174%</span><span class="cap">ganho</span></div>
+    <div class="label">Total geral · 5 features do módulo Condomínio <span style="opacity:.6">(sem contar infraestrutura)</span></div>
+    <div class="figure"><span class="n">212</span><span class="cap">antes</span></div>
+    <div class="figure"><span class="n">510</span><span class="cap">depois</span></div>
+    <div class="figure gain"><span class="n">+298 · 141%</span><span class="cap">ganho</span></div>
   </div>
 
   <div class="method">
     <h2>Metodologia</h2>
-    <p>Contagem obtida via <code>git grep -oE '(data-cy|dataCy)[A-Za-z]*[[:space:]]*=' &lt;rev&gt; -- &lt;pasta&gt;</code>, comparando o estado do código de 17/08/2026 (data de acesso ao repositório) com o estado atual da branch — que já contém a primeira leva de instrumentação mais o complemento de "acelerar cadastro" feito depois. O padrão captura tanto o atributo DOM literal <code>data-cy=</code> quanto qualquer prop React da família <code>dataCy*=</code> (ex.: <code>dataCyView=</code>) sendo efetivamente atribuída — declarações em <code>PropTypes</code> e leituras de prop sem atribuição não entram na contagem.</p>
-    <p>Blocos com <strong>0</strong> no "antes" (Pessoa relacionada/Veículo e Acelerar cadastro) são marcados como <span class="pct new" style="display:inline-block">Novo</span> em vez de percentual — cobertura criada do zero não tem uma base para calcular crescimento relativo.</p>
-    <p>Componentes compartilhados entram como linha própria, separada do total dos 6 blocos: eles também são reaproveitados por outros módulos (Cliente, Fornecedor, Condomínio) fora do escopo deste relatório, então somá-los ao total principal misturaria o ganho de Unidade com o de outras telas.</p>
-    <p>Esse número mede <em>atributos inseridos no DOM</em>, refletindo o quanto de código de instrumentação foi de fato adicionado ao repositório desde 17/08 — não é a mesma unidade de medida de um "item mapeado" em um levantamento de gaps elemento a elemento.</p>
+    <p>Contagem obtida via <code>git grep -oE '(data-cy|dataCy)[A-Za-z]*[[:space:]]*=' &lt;rev&gt; -- &lt;pasta&gt;</code>, comparando o estado do código em 17/08/2026 com o estado atual, que soma três levas de instrumentação: a primeira leva de Unidade (17-21/08), o complemento de Contas/Plano de Contas/Responsável Legal/Acordo/Acelerar Cadastro (24/08) e a leva de hoje (27/08) — Dados do Condomínio completo, o restante de Unidade e Contas Bancárias completo. O padrão captura tanto o atributo DOM literal <code>data-cy=</code> quanto qualquer prop React da família <code>dataCy*=</code> sendo efetivamente atribuída — declarações em <code>PropTypes</code> e leituras de prop sem atribuição não entram na contagem.</p>
+    <p><strong>Escopo de cada feature</strong> segue a topologia real confirmada em <code>routes.jsx</code> (grupo de menu <code>menu-pai-condominio</code>), não a organização de pastas do repositório: "Dados do Condomínio" conta só os arquivos de fato renderizados pela rota <code>/condominio</code> (Edificação e Grupo de Condomínios inclusos; Financeiro, Boleto/Pix e Acordo ficam de fora porque pertencem ao módulo Parâmetros, apesar de viverem na mesma pasta de arquivos). "Contas" conta só <code>contaBancaria/contaBancaria/</code> (a rota <code>/conta-bancaria</code> real), excluindo o código órfão em <code>contaBancaria/condominio/</code>.</p>
+    <p>Componentes compartilhados entram como linha própria, separada do total das 5 features: eles também são reaproveitados por outros módulos (Cliente, Fornecedor, Despesa) fora do escopo deste relatório, então somá-los ao total principal misturaria o ganho do Condomínio com o de outras frentes. Esse número mede <em>atributos inseridos no DOM</em>, não é a mesma unidade de medida de um "item mapeado" em um levantamento de gaps elemento a elemento.</p>
   </div>
 
 </div>
+
 </body>
 </html>
