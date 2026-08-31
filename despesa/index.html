@@ -1,1 +1,528 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ganho de cobertura data-cy — Despesa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --blueprint: #00312A;
+    --blueprint-panel: #0A6B48;
+    --blueprint-deep: #002420;
+    --rule: rgba(200,240,220,0.20);
+    --rule-soft: rgba(200,240,220,0.09);
+    --text-bright: #FFFFFF;
+    --text: #D7ECE2;
+    --text-muted: #8FBBA8;
+    --antes: #D99A3D;
+    --antes-soft: rgba(217,154,61,0.16);
+    --depois: #00964F;
+    --depois-soft: rgba(0,150,79,0.18);
+    --focus: #9EDC37;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--blueprint);
+    background-image:
+      repeating-linear-gradient(0deg, var(--rule-soft) 0 1px, transparent 1px 88px),
+      repeating-linear-gradient(90deg, var(--rule-soft) 0 1px, transparent 1px 88px);
+    color: var(--text);
+    font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--focus); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  code, .mono, .num {
+    font-family: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 28px 90px;
+  }
+
+  /* ---------- Title block ---------- */
+  .titleblock {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 26px 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 22px 32px;
+    background: linear-gradient(180deg, var(--blueprint-panel), var(--blueprint));
+  }
+
+  .titleblock .kicker {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--focus);
+    margin: 0 0 10px;
+  }
+
+  .titleblock h1 {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -0.01em;
+    color: var(--text-bright);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .titleblock .sub {
+    margin: 10px 0 0;
+    max-width: 58ch;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .meta {
+    display: grid;
+    grid-auto-rows: min-content;
+    gap: 7px;
+    align-content: start;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-left: 1px solid var(--rule);
+    padding-left: 22px;
+    min-width: 210px;
+  }
+  .meta div span { color: var(--text); }
+
+  /* ---------- Hero stats ---------- */
+  .stats {
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .stat {
+    background: var(--blueprint-deep);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .stat .value {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    color: var(--text-bright);
+  }
+  .stat .value.gain { color: var(--focus); }
+
+  .stat .label {
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Section heading ---------- */
+  .section-head {
+    margin-top: 54px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+  }
+
+  .section-head h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: "JetBrains Mono", monospace;
+  }
+  .legend .sw { display: inline-flex; align-items: center; gap: 7px; }
+  .legend .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .legend .dot.antes { background: var(--antes); }
+  .legend .dot.depois { background: var(--depois); }
+
+  /* ---------- Ledger rows ---------- */
+  .ledger { margin-top: 4px; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px minmax(0,1.55fr) minmax(0,2fr) 118px;
+    gap: 22px;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .row .idx {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    align-self: start;
+    padding-top: 3px;
+  }
+
+  .row .who h3 {
+    margin: 0 0 5px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .row .who p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    max-width: 42ch;
+  }
+  .row .who .files {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 2px 7px;
+  }
+
+  .bars {
+    display: grid;
+    gap: 7px;
+  }
+  .bar-track {
+    position: relative;
+    height: 15px;
+    background: var(--rule-soft);
+    border-radius: 2px;
+  }
+  .bar-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+  }
+  .bar-fill.antes { background: var(--antes); }
+  .bar-fill.depois { background: var(--depois); }
+  .bar-fill .fig {
+    position: absolute;
+    left: calc(100% + 8px);
+    white-space: nowrap;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    color: var(--text);
+  }
+  .bar-fill.depois .fig { color: var(--text-bright); font-weight: 600; }
+  .bar-track.zero .fig {
+    position: static;
+    padding-left: 8px;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    line-height: 15px;
+  }
+
+  .row .delta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+  .row .delta .pct {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--depois);
+  }
+  .row .delta .pct.new {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--depois-soft);
+    border: 1px solid var(--depois);
+    border-radius: 2px;
+    padding: 2px 6px;
+  }
+  .row .delta .abs {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .row.infra {
+    margin-top: 8px;
+    border-top: 1px dashed var(--rule);
+    padding-top: 22px;
+  }
+  .row.infra .idx { color: var(--text-muted); }
+
+  /* ---------- Totals bar ---------- */
+  .totals {
+    margin-top: 10px;
+    padding: 22px 24px;
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .totals .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .totals .figure {
+    font-family: "JetBrains Mono", monospace;
+    text-align: right;
+  }
+  .totals .figure .n {
+    display: block;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text-bright);
+  }
+  .totals .figure.gain .n { color: var(--focus); }
+  .totals .figure .cap {
+    display: block;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* ---------- Methodology ---------- */
+  .method {
+    margin-top: 46px;
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .method h2 {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .method p { margin: 0 0 10px; max-width: 74ch; }
+  .method code {
+    background: var(--blueprint-deep);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 1px 6px;
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    .titleblock { grid-template-columns: 1fr; }
+    .meta { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 16px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .row { grid-template-columns: 26px 1fr; row-gap: 12px; }
+    .row .bars { grid-column: 1 / -1; }
+    .row .delta { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; gap: 12px; }
+    .totals { grid-template-columns: 1fr; text-align: left; }
+    .totals .figure { text-align: left; }
+  }
+
+  .scrollwrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="titleblock">
+    <div>
+      <p class="kicker">Instrumentação de testes · módulo Despesa</p>
+      <h1>Cobertura data-cy — antes &amp; depois</h1>
+      <p class="sub">Contagem real de atributos <code>data-cy</code> nas 5 features do módulo Despesa, comparando o estado do código antes e depois da iniciativa de instrumentação para a automação de QA (Cypress). Cobertura de partida era 0% — nenhum arquivo tinha um único <code>data-cy</code>.</p>
+    </div>
+    <div class="meta">
+      <div>Repo <span>cond21cloud</span></div>
+      <div>Escopo <span>módulo Despesa, 5 features</span></div>
+      <div>Arquivos com data-cy <span>0 → 81</span></div>
+    </div>
+  </header>
+
+  <section class="stats">
+    <div class="stat">
+      <span class="value gain">+490</span>
+      <span class="label">data-cy inseridos (5 features)</span>
+    </div>
+    <div class="stat">
+      <span class="value gain">0% → 100%</span>
+      <span class="label">cobertura, partida era zero</span>
+    </div>
+    <div class="stat">
+      <span class="value">5</span>
+      <span class="label">features instrumentadas</span>
+    </div>
+    <div class="stat">
+      <span class="value">0 → 490</span>
+      <span class="label">total antes → depois</span>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>Feature a feature</h2>
+    <div class="legend">
+      <span class="sw"><span class="dot antes"></span>Antes</span>
+      <span class="sw"><span class="dot depois"></span>Depois</span>
+    </div>
+  </div>
+
+  <div class="ledger">
+
+    <div class="row">
+      <div class="idx">01</div>
+      <div class="who">
+        <h3>Contas a Pagar</h3>
+        <p>Listagem, cadastro único/linha digitável/parcelada, GED e todo o fluxo de Borderô (dashboard + 5 modais).</p>
+        <span class="files">46 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track zero"><span class="fig">0</span></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">289</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">novo</span><span class="abs">+289 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">02</div>
+      <div class="who">
+        <h3>EFD-Reinf</h3>
+        <p>Dashboard, filtros, tabelas Série 2000/4000 e modais de configuração, envio e pendências.</p>
+        <span class="files">15 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track zero"><span class="fig">0</span></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">83</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">novo</span><span class="abs">+83 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">03</div>
+      <div class="who">
+        <h3>Fornecedor</h3>
+        <p>Listagem e cadastro completo — dados gerais, endereço, conta bancária, tributação.</p>
+        <span class="files">4 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track zero"><span class="fig">0</span></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">61</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">novo</span><span class="abs">+61 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">04</div>
+      <div class="who">
+        <h3>Imposto</h3>
+        <p>Listagem, cadastro/edição de imposto e modal de órgão arrecadador.</p>
+        <span class="files">4 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track zero"><span class="fig">0</span></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">36</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">novo</span><span class="abs">+36 data-cy</span></div>
+    </div>
+
+    <div class="row">
+      <div class="idx">05</div>
+      <div class="who">
+        <h3>Cheques</h3>
+        <p>Listagem, filtro, talões expansíveis e modal de cadastro.</p>
+        <span class="files">4 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track zero"><span class="fig">0</span></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">21</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">novo</span><span class="abs">+21 data-cy</span></div>
+    </div>
+
+    <div class="row infra">
+      <div class="idx">—</div>
+      <div class="who">
+        <h3>Componentes compartilhados</h3>
+        <p>Não é uma feature própria — props <code>dataCy</code> novas em <code>FormLinhaDigitavel</code>, <code>Tabs</code>, <code>FormSelectCreatable</code>, <code>FormMonthPickerRequired</code>, <code>FormaPagamento</code>, <code>FileAnnex</code>, <code>SeletorClassePlanoContas</code> e <code>CurrencyAliquota</code>, viabilizando as 5 features acima.</p>
+        <span class="files">8 arquivos</span>
+      </div>
+      <div class="bars">
+        <div class="bar-track zero"><span class="fig">0</span></div>
+        <div class="bar-track"><div class="bar-fill depois" style="width:100%"><span class="fig">11</span></div></div>
+      </div>
+      <div class="delta"><span class="pct new">novo</span><span class="abs">+11 data-cy</span></div>
+    </div>
+
+  </div>
+
+  <div class="totals">
+    <div class="label">Total geral · 5 features do módulo Despesa <span style="opacity:.6">(sem contar infraestrutura)</span></div>
+    <div class="figure"><span class="n">0</span><span class="cap">antes</span></div>
+    <div class="figure"><span class="n">490</span><span class="cap">depois</span></div>
+    <div class="figure gain"><span class="n">+490 · novo</span><span class="cap">ganho</span></div>
+  </div>
+
+  <div class="method">
+    <h2>Metodologia</h2>
+    <p>Contagem obtida via <code>git grep -oE '(data-cy|dataCy)[A-Za-z0-9]*[[:space:]]*=' &lt;rev&gt; -- &lt;pasta&gt;</code>, comparando <code>origin/master</code> (antes) com o estado atual do código (depois). O padrão captura tanto o atributo DOM literal <code>data-cy=</code> quanto qualquer prop React da família <code>dataCy*=</code> (ex.: <code>dataCyView=</code>, <code>dataCyBotaoSalvar=</code>) sendo efetivamente atribuída — declarações em <code>PropTypes</code> e leituras de prop sem atribuição não entram na contagem.</p>
+    <p>Escopo restrito às 5 features do módulo Despesa mapeadas no artifact original de gaps (Contas a Pagar, EFD-Reinf, Fornecedor, Imposto, Cheques). A rota <code>/v2/group-pay</code> ficou de fora por decisão explícita anterior — é uma aplicação separada, fora deste repositório.</p>
+    <p>Componentes compartilhados (<code>FormLinhaDigitavel</code>, <code>Tabs</code>, <code>FormSelectCreatable</code>, <code>FormMonthPickerRequired</code>, <code>FormaPagamento</code>, <code>FileAnnex</code>, <code>SeletorClassePlanoContas</code>, <code>CurrencyAliquota</code>) também ganharam props <code>dataCy</code> novas para viabilizar parte desses ganhos — por isso entram no relatório como linha própria, separada do total das 5 features: como esses componentes também são reaproveitados por telas fora do módulo Despesa, somá-los ao total principal inflaria o número sem representar só Despesa.</p>
+    <p>Esse número mede <em>atributos inseridos no DOM</em>, não é a mesma unidade de medida de um "item mapeado" em um levantamento de gaps elemento a elemento (470 itens no artifact original — que agrupa, por exemplo, um <code>ActionPanel</code> inteiro como 1 item mesmo quando vira 3 props <code>dataCy</code> separadas na implementação).</p>
+  </div>
+
+</div>
+
+</body>
+</html>
